@@ -262,11 +262,9 @@ transformation in the sleuth_prep() step. By default, these would have been natu
 
 ## Salving results table
 ```{r}
-#write.xlsx(sleuth_results_AW, file='results/sleuth_results_AW.xlsx', sheetName = "DE_AW", 
-#  col.names = TRUE, row.names = FALSE, append = FALSE)
-#
-#write.xlsx(sleuth_results_Q, file='results/sleuth_results_Q.xlsx', sheetName = "DE_Q", 
-#  col.names = TRUE, row.names = FALSE, append = FALSE)
+writexl::write_xlsx(sleuth_results_RNAi, path='results/sleuth_results_RNAi.xlsx', col_names = TRUE)
+
+?write_xlsx
 ```
 
 

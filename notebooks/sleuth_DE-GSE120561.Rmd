@@ -112,7 +112,7 @@ Create a dataframe containing metadata and locations of the estimated counts fil
 Create metadata associated with the kallisto files as in the DESeq2 using the data.frame().
 ```{r}
 
-base_dir <- "kallisto/quant"
+base_dir <- "../results/GSE120561/kallisto/quant"
 
 sample_id <- dir(file.path(base_dir))
 
@@ -359,7 +359,7 @@ volcano + geom_label_repel(data= legen, aes(label= legen$target_id), size=4, fon
        y= expression(paste("q-value (-log"[10], ")")),
        color="Differentially Expressed") +
   theme_bw() + coord_cartesian(clip = "off")
-ggsave(file="results/volcano1_queen.jpeg", height=5, width=9, dpi=300)
+#ggsave(file="results/volcano1_queen.jpeg", height=5, width=9, dpi=300)
 ```
 
 
@@ -391,7 +391,7 @@ volcano + geom_label_repel(data= legen, aes(label= legen$target_id), size=4, fon
        y= expression(paste("q-value (-log"[10], ")")),
        color="Differentially Expressed") +
   theme_bw() + coord_cartesian(clip = "off")
-ggsave(file="results/volcano2_queenless.jpeg", height=5, width=9, dpi=300)
+#ggsave(file="results/volcano2_queenless.jpeg", height=5, width=9, dpi=300)
 ```
 
 
@@ -448,53 +448,53 @@ plot1 <- plot_bootstrap(so, "lncov1", units = "est_counts", color_by = "conditio
 
 ggtitle("lncov1") + theme_bw() + 
   theme(legend.position="none", plot.title = element_text(size = 14, face="italic")) +
-  ylab(expression("Estimated counts - log"[2])) + xlab("Samples") + 
+  ylab(expression("Estimated counts")) + xlab("Samples") +  
   facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', repeat.tick.labels = "All", strip.position="bottom") + scale_fill_manual(values=c("#7f7efd", "#fd8183", "#74C476"))
 
 plot1
-ggsave(file="results/boxplot1_lncov1.jpeg", height=5, width=9, dpi=300)
+#ggsave(file="results/boxplot1_lncov1.jpeg", height=5, width=9, dpi=300)
 ```
 
 
 Transcript XM_001120691.5 = Loc726407
 ```{r}
-plot2 <- plot_bootstrap(so, "XM_001120691.5", units = "est_counts", color_by = "condition") +
-
-ggtitle("LOC726407") + theme_bw() + theme(legend.position="none", plot.title = element_text(size = 14, face="italic")) +
-  ylab(expression("Estimated counts - log"[2])) + xlab("Samples") + 
-  facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', repeat.tick.labels = "All", strip.position="bottom") + 
-  scale_fill_manual(values=c("#7f7efd", "#fd8183", "#74C476"))
-
-plot2
-ggsave(file="results/boxplot2_Loc726407.jpeg", height=5, width=9, dpi=300)
+# plot2 <- plot_bootstrap(so, "XM_001120691.5", units = "est_counts", color_by = "condition") +
+# 
+# ggtitle("LOC726407") + theme_bw() + theme(legend.position="none", plot.title = element_text(size = 14, face="italic")) +
+#   ylab(expression("Estimated counts")) + xlab("Samples") + 
+#   facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', repeat.tick.labels = "All", strip.position="bottom") + 
+#   scale_fill_manual(values=c("#7f7efd", "#fd8183", "#74C476"))
+# 
+# plot2
+#ggsave(file="results/boxplot2_Loc726407.jpeg", height=5, width=9, dpi=300)
 ```
 
 
 Transcript XM_393605.7 = Gapdh
 ```{r}
-plot3 <- plot_bootstrap(so, "XM_393605.7", units = "est_counts", color_by = "condition") +
-
-ggtitle("Gapdh") + theme_bw() + theme(legend.position="none", plot.title = element_text(size = 14, face="italic")) +
-  ylab(expression("Estimated counts - log"[2])) + xlab("Samples") + 
-  facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', repeat.tick.labels = "All", strip.position="bottom") + 
-  scale_fill_manual(values=c("#7f7efd", "#fd8183", "#74C476"))
-
-plot3
+# plot3 <- plot_bootstrap(so, "XM_393605.7", units = "est_counts", color_by = "condition") +
+# 
+# ggtitle("Gapdh") + theme_bw() + theme(legend.position="none", plot.title = element_text(size = 14, face="italic")) +
+#   ylab(expression("Estimated counts")) + xlab("Samples") +  
+#   facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', repeat.tick.labels = "All", strip.position="bottom") + 
+#   scale_fill_manual(values=c("#7f7efd", "#fd8183", "#74C476"))
+# 
+# plot3
 #ggsave(file="results/boxplot3_Gapdh.jpeg", height=5, width=9, dpi=300)
 ```
 
 
 XM_624635.6 para Tudor-SN
 ```{r}
-plot4 <- plot_bootstrap(so, "XM_624635.6", units = "est_counts", color_by = "condition") + 
-
-ggtitle("Tudor-SN") + theme_bw() + 
-  ylab(expression("Estimated counts - log"[2])) + ylim(c(10, 10.75)) + xlab("Samples") + 
-  facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', repeat.tick.labels = "All", strip.position="bottom") + 
-  scale_fill_manual(values=c("#7f7efd", "#fd8183", "#74C476"))
-
-plot4
-ggsave(file="results/boxplot4_Tudor-SN.jpeg", height=5, width=9, dpi=300)
+# plot4 <- plot_bootstrap(so, "XM_624635.6", units = "est_counts", color_by = "condition") + 
+# 
+# ggtitle("Tudor-SN") + theme_bw() + 
+#   ylab(expression("Estimated counts - log"[2])) + ylim(c(10, 10.75)) + xlab("Samples") + 
+#   facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', repeat.tick.labels = "All", strip.position="bottom") + 
+#   scale_fill_manual(values=c("#7f7efd", "#fd8183", "#74C476"))
+# 
+# plot4
+#ggsave(file="results/boxplot4_Tudor-SN.jpeg", height=5, width=9, dpi=300)
 ```
 
 
@@ -503,48 +503,47 @@ XM_006569892.2 = ef1alfa
 plot5 <- plot_bootstrap(so, "XM_006569892.2", units = "est_counts", color_by = "condition") +
 
 ggtitle("Ef1α") + theme_bw(11) + 
-  theme(legend.position="none", plot.title = element_text(size = 16, face="italic"), 
-        axis.text.x = element_text(angle = 45,  hjust=1)) +
-  ylab(expression("Estimated counts - log"[2])) + xlab("Samples") + 
+  theme(legend.position="none", plot.title = element_text(size = 16, face="italic")) +
+  ylab(expression("Estimated counts")) + xlab("Samples") + 
   facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', 
                  repeat.tick.labels = "All", strip.position="bottom", ncol = 5) + 
   scale_fill_manual(values=c("#7f7efd", "#fd8183", "#74C476"))
 
 
 plot5
-ggsave(file="results/boxplot5_ef1alfa_v03.jpeg", height=8, width=11, dpi=300)
+#ggsave(file="results/boxplot5_ef1alfa_v03.jpeg", height=8, width=11, dpi=300)
 ```
 
 
 rp49 = XM_006564315.3
 ```{r}
-plot6 <- plot_bootstrap(so, "XM_006564315.3", units = "est_counts", color_by = "condition") +
-
-ggtitle("rp49") + theme_bw(11) + 
-  theme(legend.position="none", plot.title = element_text(size = 16, face="italic"), 
-        axis.text.x = element_text(angle = 45,  hjust=1)) +
-  ylab(expression("Estimated counts - log"[2])) + xlab("Samples") + 
-  facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', 
-                 repeat.tick.labels = "All", strip.position="bottom", ncol = 5) + 
-  scale_fill_manual(values=c("#7f7efd", "#fd8183", "#74C476"))
-
-
-plot6
+# plot6 <- plot_bootstrap(so, "XM_006564315.3", units = "est_counts", color_by = "condition") +
+# 
+# ggtitle("rp49") + theme_bw(11) + 
+#   theme(legend.position="none", plot.title = element_text(size = 16, face="italic"), 
+#         axis.text.x = element_text(angle = 45,  hjust=1)) +
+#   ylab(expression("Estimated counts - log"[2])) + xlab("Samples") + 
+#   facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', 
+#                  repeat.tick.labels = "All", strip.position="bottom", ncol = 5) + 
+#   scale_fill_manual(values=c("#7f7efd", "#fd8183", "#74C476"))
+# 
+# 
+# plot6
 #ggsave(file="results/boxplot4_rp49.jpeg", height=8, width=11, dpi=300)
 ```
 
 
 Distribuition of est_counts of transcripts:
-```{r, fig.height=16, fig.width=10}
-plot_grid(plot1 + theme(legend.position="right"),  
-          plot2 + theme(legend.position="right"), 
+```{r, fig.height=8, fig.width=9}
+plot_grid(plot1,# + theme(legend.position="right"),  
+          #plot2 + theme(legend.position="right"), 
           #plot3 + theme(legend.position="right"),
-          plot5 + theme(legend.position="right"),
-          plot4 + theme(legend.position="right"),
+          plot5, # + theme(legend.position="right"),
+          #plot4 + theme(legend.position="right"),
           #plot4 + theme(legend.position="none") + ylab(NULL),
-          labels = c("A", "B", "C", "D"),
-          ncol = 1, nrow = 4)
-ggsave(file="results/boxplot5_all.jpeg", height=16, width=10, dpi=300)
+          labels = c("A", "B"),
+          ncol = 1, nrow = 2)
+ggsave(file="../results/GSE120561/figures/boxplot_lncov1_Ef1a.jpeg", height=8, width=9, dpi=600)
 ```
 
 ## 6. Heatmaps

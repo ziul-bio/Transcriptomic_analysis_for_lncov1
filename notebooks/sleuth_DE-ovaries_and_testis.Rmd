@@ -9,31 +9,7 @@ estimates obtained via kallisto for accurate differential analysis of isoforms o
 context of experiments with complex designs, and supports interactive exploratory data analysis via sleuth live.
 The sleuth methods are described in:
 
-H Pimentel, NL Bray, S Puente, P Melsted and Lior Pachter, Differential analysis of RNA-seq incorporating quantification uncertainty, Nature Methods (2017), advanced access.
-
-## Instalation of leuth
-```{r}
-#BiocManager::install("pachterlab/sleuth")
-```
-I got an ERRO:
-
-namespace:rhdf5' Execution halted ERROR: lazy loading failed for package 'sleuth'
-
-removing 'C:/Users/31625/OneDrive/Documents/R/win-library/4.1/sleuth'
-
-## Working around
-
-* Run git clone https://github.com/pachterlab/sleuth
-
-* Remove the last line in ./sleuth/NAMESPACE file which is the h5write.default that raises the error during installation - ignore the warning in the first line
-
-* Then in R:
-make sure to set work env in R env to the same local where git was cloned.
-```{r}
-# setwd("C:/Users/username/Downloads")
-# devtools::install('./sleuth/')
-```
-
+H Pimentel, NL Bray, S Puente, P Melsted and Lior Pachter, Differential analysis of RNA-seq incorporating quantification uncertainty, Nature Methods (2017).
 
 ## Loading libraries 
 ```{r include=FALSE}
@@ -43,6 +19,7 @@ library(ggplot2)
 library(ggrepel)
 library(cowplot)
 library(lemon)
+library(openxlsx)
 ```
 
 
@@ -103,8 +80,7 @@ Create a dataframe containing metadata and locations of the estimated counts fil
 First, we create a simple vector containing the paths to the directories containing the transcript abundance 
 estimates for each sample (folders containing the .quant files).
 ```{r}
-base_dir <- "../results/GSE93028/kallisto/quant"
-
+base_dir <- "../results/denyse/kallisto/quant"
 sample_id <- dir(file.path(base_dir))
 
 # file.path() function gives the paths to each of the directories.
@@ -120,11 +96,11 @@ Create metadata associated with the kallisto files as in the DESeq2 using the da
 ```{r}
 # Sleuth requires a column entitled “sample” containing the sample names:
 metadata <- data.frame(sample = sample_id,
-                          condition = factor(c(rep("C", 3), rep("Q", 3), rep("R", 3), rep("V", 3), rep("W", 3)))
+                          condition = factor(c(rep("D", 3), rep("Q", 3), rep("W", 3)))
                           )
 
 # Reordering group factor levels
-metadata$condition <- factor(metadata$condition, levels = c("W", "V", "Q", "C", "R"))
+metadata$condition <- factor(metadata$condition, levels = c("W", "D", "Q"))
 ```
 
 
@@ -185,13 +161,19 @@ This function can take a bit of time, but there is an option (ncores) to split a
 ```{r}
 # Create sleuth object for analysis 
 
+basic_filter <- function (row, min_reads = 5, min_prop = 0.47) {
+  mean(row >= min_reads) >= min_prop
+  }
+
+
 so <- sleuth_prep(metadata, 
                   full_model = design, 
                   #target_mapping = t2g,
                   num_cores = 4L,
                   read_bootstrap_tpm = TRUE,
                   extra_bootstrap_summary = TRUE,
-                  transform_fun_counts = function(x) log2(x + 0.5)
+                  transform_fun_counts = function(x) log2(x + 0.5),
+                  filter_fun = basic_filter
                   )
 ```
 NOTE: By default the transformation of counts is natural log, which would make the output fold changes somewhat 
@@ -206,6 +188,14 @@ sleuth performs shrinkage of variance, parameter estimation and estimation of va
 ```{r}
 so <- sleuth_fit(so)
 ```
+
+
+## The statistics "under the hood"
+
+sleuth looks at the overall variance of a gene, and then first attempts to estimate what part of that variance
+is from the "technical variance" introduced by kallisto (in bootstrap), and then compares the variance within
+a group (Biological repricates) to the variance between groups (treatment groups).
+
 
 ## Check which models have been fit and which coefficients can be tested
 
@@ -224,28 +214,16 @@ At this step in the workflow, we need to specify which level we want to compare 
 
 # Wald test for differential expression of isoforms
 ```{r}
-DE_V <- sleuth_wt(so, which_beta = 'conditionV')
+DE_D <- sleuth_wt(so, which_beta = 'conditionD')
 DE_Q <- sleuth_wt(so, which_beta = 'conditionQ')
-DE_C <- sleuth_wt(so, which_beta = 'conditionC')
-DE_R <- sleuth_wt(so, which_beta = 'conditionR')
+
 
 
 # Get results
-sleuth_results_V <- sleuth_results(DE_V, 
-                                    test = 'conditionV', 
-                                    show_all = TRUE)
+sleuth_results_D <- sleuth_results(DE_D, test = 'conditionD', show_all = TRUE)
 
-sleuth_results_Q <- sleuth_results(DE_Q, 
-                                    test = 'conditionQ', 
-                                    show_all = TRUE)
+sleuth_results_Q <- sleuth_results(DE_Q, test = 'conditionQ', show_all = TRUE)
 
-sleuth_results_C <- sleuth_results(DE_C, 
-                                    test = 'conditionC', 
-                                    show_all = TRUE)
-
-sleuth_results_R <- sleuth_results(DE_R, 
-                                    test = 'conditionR', 
-                                    show_all = TRUE)
 ```
 NOTE: The output represents the results from the differential expression testing with the following columns:
 
@@ -267,17 +245,10 @@ transformation in the sleuth_prep() step. By default, these would have been natu
 
 Salving results table
 ```{r}
-#write.xlsx(sleuth_results_V, file='results/sleuth_results_V.xlsx', sheetName = "DE_V", 
-#  col.names = TRUE, row.names = FALSE, append = FALSE)
-#
-#write.xlsx(sleuth_results_Q, file='results/sleuth_results_Q.xlsx', sheetName = "DE_Q", 
-#  col.names = TRUE, row.names = FALSE, append = FALSE)
-#
-#write.xlsx(sleuth_results_C, file='results/sleuth_results_C.xlsx', sheetName = "DE_C", 
-#  col.names = TRUE, row.names = FALSE, append = FALSE)
-#
-#write.xlsx(sleuth_results_R, file='results/sleuth_results_R.xlsx', sheetName = "DE_R", 
-#  col.names = TRUE, row.names = FALSE, append = FALSE)
+#write.xlsx(sleuth_results_D, 'results/sleuth_results_D.xlsx', col_names = TRUE)
+
+#write.xlsx(sleuth_results_Q, 'results/sleuth_results_Q.xlsx', col_names = TRUE)
+
 ```
 
 
@@ -299,29 +270,30 @@ txI <- c("XM_001120691.5", "XM_624635.6", "lncov1", "XM_006569892.2")
 
 ## 1. Get Differencial expressed transcripts results table
 ```{r}
-sleuth_sig_V <- dplyr::filter(sleuth_results_V, pval <= 0.05)
+sleuth_sig_D <- dplyr::filter(sleuth_results_D, pval <= 0.05)
 sleuth_sig_Q <- dplyr::filter(sleuth_results_Q, pval <= 0.05)
 
-head(sleuth_sig_V)
+head(sleuth_sig_Q)
 ```
 
 # 2. Volcano plot
 
 volcano plot, Plots of beta value (regression) versus log of significance p-values.
 
-## Volcano plot Virgen queen vs Worker
+## Volcano plot Drone vs Worker
 ```{r, fig.height=5, fig.width=9}
-q <- as.data.frame(sleuth_results_V)
+q <- as.data.frame(sleuth_results_D)
 q <- na.omit(q)
 q$significant <- ifelse(q$qval<0.05, "True", "False")
 q[which(abs(q$b)<1),'significant'] <- "False"
 q <- q[order(q$qval),]
 
+
 legen <- q[q$target_id %in% txI, ]
 legen$target_id <- recode(legen$target_id, XM_001120691.5 = "LOC726407", 
                           #XM_393605.7 = "Gapdh" ,
                           XM_624635.6 = "Tudor-SN",
-                          XM_006569892.2 = "Ef1α" )
+                          XM_006569892.2 = "Ef1α"  )
 
 volcano = ggplot(q, aes(b, -log10(qval))) + 
   geom_point(aes(col=significant)) +
@@ -331,14 +303,13 @@ volcano = ggplot(q, aes(b, -log10(qval))) +
 volcano + geom_label_repel(data= legen, aes(label= legen$target_id), size=4, 
   box.padding = unit(2, "lines"), point.padding = unit(5, "points")) +
   labs(title= "Volcano plot of Diferencial Expressed Transcipts",
-       subtitle = "Comparison of Virgen Queen vs Worker",
+       subtitle = "Comparison of Drone vs Worker",
        x= expression(paste("Log"[2], " fold change")), 
-       y= expression(paste("q-value (-log"[10], ")")),
+       y= expression(paste("q-value (-log" [10], ")")),
        color="Differentially Expressed") +
   theme_bw() + coord_cartesian(clip = "off")
-#ggsave(file="results/volcano1_Virgen.jpeg", height=5, width=9, dpi=300)
+ggsave(file="results/volcano1_Drone_x_worker_v02.jpeg", height=5, width=9, dpi=300)
 ```
-
 
 
 ## Volcano plot Normal Queen vs Worker
@@ -354,7 +325,7 @@ legen <- q[q$target_id %in% txI, ]
 legen$target_id <- recode(legen$target_id, XM_001120691.5 = "LOC726407", 
                           #XM_393605.7 = "Gapdh" ,
                           XM_624635.6 = "Tudor-SN",
-                          XM_006569892.2 = "Ef1α" )
+                          XM_006569892.2 = "Ef1α"  )
 
 volcano = ggplot(q, aes(b, -log10(qval))) + 
   geom_point(aes(col=significant)) +
@@ -362,78 +333,14 @@ volcano = ggplot(q, aes(b, -log10(qval))) +
 
 
 volcano + geom_label_repel(data= legen, aes(label= legen$target_id), size=4, 
-  box.padding = unit(2, "lines"), point.padding = unit(5, "points")) +
+  box.padding = unit(2, "lines"), point.padding = unit(5, "points")) + ylim(0,1000) +
   labs(title= "Volcano plot of Diferencial Expressed Transcipts",
-       subtitle = "Comparison of Normal Queen vs Worker",
+       subtitle = "Comparison of Queen vs Worker",
        x= expression(paste("Log"[2], " fold change")), 
        y= expression(paste("q-value (-log"[10], ")")),
        color="Differentially Expressed") +
   theme_bw() + coord_cartesian(clip = "off")
-ggsave(file="results/volcano2_Normal-Queen.jpeg", height=5, width=9, dpi=300)
-```
-
-
-## Volcano plot caged queen vs Worker
-```{r, fig.height=5, fig.width=9}
-q <- as.data.frame(sleuth_results_C)
-q <- na.omit(q)
-q$significant <- ifelse(q$qval<0.05, "True", "False")
-q[which(abs(q$b)<1),'significant'] <- "False"
-q <- q[order(q$qval),]
-
-
-legen <- q[q$target_id %in% txI, ]
-legen$target_id <- recode(legen$target_id, XM_001120691.5 = "LOC726407", 
-                          #XM_393605.7 = "Gapdh" ,
-                          XM_624635.6 = "Tudor-SN",
-                          XM_006569892.2 = "Ef1α" )
-
-volcano = ggplot(q, aes(b, -log10(qval))) + 
-  geom_point(aes(col=significant)) +
-  scale_color_manual(values=c("red", "gray"))
-
-
-volcano + geom_label_repel(data= legen, aes(label= legen$target_id), size=4, 
-  box.padding = unit(2, "lines"), point.padding = unit(5, "points")) +
-  labs(title= "Volcano plot of Diferencial Expressed Transcipts",
-       subtitle = "Comparison of Caged Queen vs Worker",
-       x= expression(paste("Log"[2], " fold change")), 
-       y= expression(paste("q-value (-log"[10], ")")),
-       color="Differentially Expressed") +
-  theme_bw() + coord_cartesian(clip = "off")
-ggsave(file="results/volcano3_Caged.jpeg", height=5, width=9, dpi=300)
-```
-
-
-## Volcano plot recovered queen vs Worker
-```{r, fig.height=5, fig.width=9}
-q <- as.data.frame(sleuth_results_R)
-q <- na.omit(q)
-q$significant <- ifelse(q$qval<0.05, "True", "False")
-q[which(abs(q$b)<1),'significant'] <- "False"
-q <- q[order(q$qval),]
-
-
-legen <- q[q$target_id %in% txI, ]
-legen$target_id <- recode(legen$target_id, XM_001120691.5 = "LOC726407", 
-                          #XM_393605.7 = "Gapdh" ,
-                          XM_624635.6 = "Tudor-SN",
-                          XM_006569892.2 = "Ef1α" )
-
-volcano = ggplot(q, aes(b, -log10(qval))) + 
-  geom_point(aes(col=significant)) +
-  scale_color_manual(values=c("red", "gray"))
-
-
-volcano + geom_label_repel(data= legen, aes(label= legen$target_id), size=4, 
-  box.padding = unit(2, "lines"), point.padding = unit(5, "points")) +
-  labs(title= "Volcano plot of Diferencial Expressed Transcipts",
-       subtitle = "Comparison of Recovered Queen vs Worker",
-       x= expression(paste("Log"[2], " fold change")), 
-       y= expression(paste("q-value (-log"[10], ")")),
-       color="Differentially Expressed") +
-  theme_bw() + coord_cartesian(clip = "off")
-ggsave(file="results/volcano4_Recovered.jpeg", height=5, width=9, dpi=300)
+ggsave(file="results/volcano2_Queen_x_worker_v02.jpeg", height=5, width=9, dpi=300)
 ```
 
 
@@ -460,54 +367,54 @@ plot_group_density(so, use_filtered = TRUE, units = "est_counts",
 ## 5. Boxplots
 
 Transcript lncov1
-```{r, fig.height=5, fig.width=10}
-names_facet <- c(W = "Queenright workers", V = "Virgen Queen", Q = "Egg-laying Queen", 
-                 C = "Egg-laying Inhibited Queen", R = "Egg-laying Recovered Queen")
+```{r, fig.height=6, fig.width=10}
+names_facet <- c(W = "Queenright workers", D = "Drone", Q = "Queen")
 
 plot1 <- plot_bootstrap(so, "lncov1", units = "est_counts", color_by = "condition") +
 
-ggtitle("lncov1") + theme_bw(10) + 
-  theme(legend.position="none", plot.title = element_text(size = 16, face="italic")) +
-  ylab(expression("Estimated counts")) + xlab("Samples") + 
-  facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', 
-                 repeat.tick.labels = "All", strip.position="bottom", ncol = 5) + 
-  scale_fill_manual(values=c("#7f7efd", "#CCFFCC", "#74C476", "#FFFF00", "#FF9900" ))+
-  ylim(5,12)
-
+ggtitle("lncov1") + theme_bw(11) + 
+ theme(legend.position="none", plot.title = element_text(size = 14, face="italic")) +
+  ylab("Estimated counts") + xlab("Samples") +  
+  facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', repeat.tick.labels = "All", strip.position="bottom") +
+  scale_fill_manual(values=c("#7f7efd","#DCDCDC","#74C476")) +
+  ylim(7.5, 11.5)
 
 plot1
-#ggsave(file="results/boxplot1_lncov1.jpeg", height=5, width=9, dpi=300)
+#ggsave(file="results/boxplot1_lncov1.jpeg", height=8, width=11, dpi=300)
 ```
 
 
 
 XM_006569892.2 = ef1alfa
-```{r, fig.height=5, fig.width=10}
-plot2 <- plot_bootstrap(so, "XM_006569892.2", units = "est_counts", color_by = "condition") +
+```{r, fig.height=6, fig.width=10}
+plot3 <- plot_bootstrap(so, "XM_006569892.2", units = "est_counts", color_by = "condition") +
 
-ggtitle("Ef1α") + theme_bw(10) + 
-  theme(legend.position="none", plot.title = element_text(size = 16, face="italic")) +
-  ylab(expression("Estimated counts")) + xlab("Samples") + 
+ggtitle("Ef1α") + theme_bw(11) + 
+  theme(legend.position="none", plot.title = element_text(size = 14, face="italic")) +
+  ylab("Estimated counts") + xlab("Samples") +  
+  facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', repeat.tick.labels = "All", strip.position="bottom") +
   facet_rep_wrap(~condition, labeller = as_labeller(names_facet), scales='free_x', 
                  repeat.tick.labels = "All", strip.position="bottom", ncol = 5) + 
-  scale_fill_manual(values=c("#7f7efd", "#CCFFCC", "#74C476", "#FFFF00", "#FF9900" )) +
-  ylim(5,12)
+  scale_fill_manual(values=c("#7f7efd","#DCDCDC","#74C476"))+
+  ylim(7.5, 11.5)
 
 
-plot2
-#ggsave(file="results/boxplot5_Ef1α.jpeg", height=8, width=11, dpi=300)
+plot3
+#ggsave(file="results/boxplot3_ef1alfa_v02.jpeg", height=8, width=11, dpi=300)
 ```
 
 
-
 Distribuition of est_counts of transcripts of interest:
-```{r, fig.height=8, fig.width=10}
-plot_grid(plot1,
-          plot2,
+```{r, fig.height=8, fig.width=9}
+plot_grid(plot1, #+ theme(legend.position="right"),  
+          #plot2 + theme(legend.position="right"), 
+          plot3,# + theme(legend.position="right"),
+          #plot4 + theme(legend.position="right"),
+          #plot4 + theme(legend.position="none") + ylab(NULL),
           labels = c("A", "B"),
           ncol = 1, nrow = 2)
 
-ggsave(file="../results/GSE93028/figures/boxplot_GSE93028_lncov1_elf1a.jpeg", height=8, width=10, dpi=600)
+ggsave(file="../results/denyse/figures/boxplot_ovaries_and_testis_lncov1_elf1a.jpeg", height=8, width=9, dpi=600)
 ```
 
 
