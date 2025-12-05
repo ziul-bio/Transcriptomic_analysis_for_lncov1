@@ -413,19 +413,9 @@ plot_grid(plot1, #+ theme(legend.position="right"),
           labels = c("A", "B"),
           ncol = 1, nrow = 2)
 
-#ggsave(file="../results/denyse/figures/boxplot_ovaries_and_testis_lncov1_elf1a.jpeg", height=8, width=9, dpi=600)
+ggsave(file="../results/PRJNA636804/figures/boxplot_ovaries_and_testis_lncov1_elf1a.jpeg", height=8, width=9, dpi=600)
 ```
 
-
-## 6. Heatmaps
-
-we can perform an expression heatmap for select transcripts, transcripts of interest:
-```{r, fig.height=5, fig.width=9}
-# Filtando a matriz pelos transcritos de interesse
-mat <- sleuth_results_Q[sleuth_results_Q$target_id %in% txI, ]
-  
-plot_transcript_heatmap(DE_Q, units = "est_counts", transcripts = mat$target_id)
-```
 
 ## Referências
 
