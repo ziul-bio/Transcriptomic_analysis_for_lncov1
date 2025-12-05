@@ -80,7 +80,7 @@ Create a dataframe containing metadata and locations of the estimated counts fil
 First, we create a simple vector containing the paths to the directories containing the transcript abundance 
 estimates for each sample (folders containing the .quant files).
 ```{r}
-base_dir <- "../results/denyse/kallisto/quant"
+base_dir <- "../results/PRJNA636804/kallisto/quant"
 sample_id <- dir(file.path(base_dir))
 
 # file.path() function gives the paths to each of the directories.
@@ -160,7 +160,6 @@ and filtered, then merged with the metadata. In addition, the bootstraps for eac
 This function can take a bit of time, but there is an option (ncores) to split across multiple processors.
 ```{r}
 # Create sleuth object for analysis 
-
 basic_filter <- function (row, min_reads = 5, min_prop = 0.47) {
   mean(row >= min_reads) >= min_prop
   }
@@ -247,7 +246,7 @@ Salving results table
 ```{r}
 #write.xlsx(sleuth_results_D, 'results/sleuth_results_D.xlsx', col_names = TRUE)
 
-#write.xlsx(sleuth_results_Q, 'results/sleuth_results_Q.xlsx', col_names = TRUE)
+#write_xlsx(sleuth_results_Q, path='../results/PRJNA636804/sleuth/results_deseq2_W_x_Q_Lago_et.al.xlsx')
 
 ```
 
@@ -308,7 +307,7 @@ volcano + geom_label_repel(data= legen, aes(label= legen$target_id), size=4,
        y= expression(paste("q-value (-log" [10], ")")),
        color="Differentially Expressed") +
   theme_bw() + coord_cartesian(clip = "off")
-ggsave(file="results/volcano1_Drone_x_worker_v02.jpeg", height=5, width=9, dpi=300)
+#ggsave(file="results/volcano1_Drone_x_worker_v02.jpeg", height=5, width=9, dpi=300)
 ```
 
 
@@ -340,7 +339,7 @@ volcano + geom_label_repel(data= legen, aes(label= legen$target_id), size=4,
        y= expression(paste("q-value (-log"[10], ")")),
        color="Differentially Expressed") +
   theme_bw() + coord_cartesian(clip = "off")
-ggsave(file="results/volcano2_Queen_x_worker_v02.jpeg", height=5, width=9, dpi=300)
+#ggsave(file="results/volcano2_Queen_x_worker_v02.jpeg", height=5, width=9, dpi=300)
 ```
 
 
@@ -414,7 +413,7 @@ plot_grid(plot1, #+ theme(legend.position="right"),
           labels = c("A", "B"),
           ncol = 1, nrow = 2)
 
-ggsave(file="../results/denyse/figures/boxplot_ovaries_and_testis_lncov1_elf1a.jpeg", height=8, width=9, dpi=600)
+#ggsave(file="../results/denyse/figures/boxplot_ovaries_and_testis_lncov1_elf1a.jpeg", height=8, width=9, dpi=600)
 ```
 
 
