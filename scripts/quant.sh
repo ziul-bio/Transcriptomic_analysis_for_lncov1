@@ -60,6 +60,9 @@ if [ "$experimentID" = "GSE120561" ]; then
 		time kallisto quant -t 24 --single --fragment-length=49 --sd=1 -b 1000 -i ${KALLISTO_INDEX} -o ${OUT_DIR}/"$SAMPLE" ${SEQ_DIR}/*_"$SAMPLE"*.fastq.gz
 	done
 	
+
+
+
 # sample experiment id GSE93028 (lncRNA-miRNA-mRNA and reproductive regulation in honey bees)
 elif [ "$experimentID" = "GSE93028" ]; then
 
@@ -68,12 +71,16 @@ elif [ "$experimentID" = "GSE93028" ]; then
 		time kallisto quant -t 24 -b 1000 --rf-stranded -i ${KALLISTO_INDEX} -o ${OUT_DIR}/"$SAMPLE" ${SEQ_DIR}/*_"$SAMPLE"_1.fastq.gz ${SEQ_DIR}/*_"$SAMPLE"_2.fastq.gz
 	done
 	
-# sample experiment id PRJNA996350 (the transcriptome changes in honey bee larvae after inhibiting AmKr-h1 expression.)
-elif [ "$experimentID" = "PRJNA996350" ]; then
+
+
+
+
+# sample experiment id PRJNA636804 (Sex- and caste-specific transcriptomes of larval honey bee (Apis mellifera L.) gonads: DMRT A2 and Hsp83 are differentially expressed and regulated by juvenile hormone)
+elif [ "$experimentID" = "PRJNA636804" ]; then
 	
-	for SAMPLE in con1 con2 con3 RNAi1 RNAi2 RNAi3;
+	for i in Amd1 Amd2 Amd3 Amq1 Amq2 Amq3 Amw1 Amw2 Amw3;
 	do
-		time kallisto quant -t 24 -b 1000 --rf-stranded -i ${KALLISTO_INDEX} -o ${OUT_DIR}/"$SAMPLE" ${SEQ_DIR}/*_"$SAMPLE"_1.fastq.gz ${SEQ_DIR}/*_"$SAMPLE"_2.fastq.gz
+		time kallisto quant -t 24 -b 1000 --rf-stranded -i ${KALLISTO_INDEX} -o ${OUT_DIR}/"$i" ${SEQ_DIR}/$i/*_R1.fastq.gz ${SEQ_DIR}/$i/*_R2.fastq.gz
 	done
 
 

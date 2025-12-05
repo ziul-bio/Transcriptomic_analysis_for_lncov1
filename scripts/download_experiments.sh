@@ -5,7 +5,7 @@
 # bash scripts/download_data.sh -experiment PRJNA996350
 
 # Define a list of valid experiment IDs
-valid_data=("GSE120561" "GSE93028" "PRJNA996350")
+valid_data=("GSE120561" "GSE93028" "PRJNA996350" PRJNA636804)
 
 # Check if the correct number of arguments are provided
 if [ "$#" -ne 2 ]; then
@@ -39,10 +39,32 @@ if [ "$is_valid_experiment" = false ]; then
 fi
 
 
+
+
+
+########################################################################
 if [ "$experiment" = "GSE120561" ]; then
-# Sample - GSE120561 (queen, queenless-worker and worker)
-#
-#https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120561
+########################################################################
+    # Sample - GSE120561 (queen, queenless-worker and worker)
+    #https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120561
+    # Sample 4 - GSE120561 (queen, queenless-worker and worker)
+    # https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120561
+    # Overall design: RNA-seq to measure gene expression in queen,
+    # queen right worker and actively laying worker ovaries
+    # tissue: ovary
+    # Library strategy:	RNA-Seq
+    # Library source:	transcriptomic
+    # Library selection:	cDNA
+    # Instrument model:	Illumina HiSeq 2500
+    mkdir -p data/GSE120561/rawFastq
+
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR790/006/SRR7908186/SRR7908186.fastq.gz -o data/GSE120561/SRR7908186_W1_Worker_Pool_1.fastq.gz
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR790/007/SRR7908187/SRR7908187.fastq.gz -o data/GSE120561/SRR7908187_W2_Worker_Pool_2.fastq.gz
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR790/008/SRR7908188/SRR7908188.fastq.gz -o data/GSE120561/SRR7908188_AW1_Active_Pool_1.fastq.gz
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR790/009/SRR7908189/SRR7908189.fastq.gz -o data/GSE120561/SRR7908189_AW2_Active_Pool_2.fastq.gz
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR790/001/SRR7908191/SRR7908191.fastq.gz -o data/GSE120561/SRR7908191_Q2_Queen_Pool_2.fastq.gz
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR790/000/SRR7908190/SRR7908190.fastq.gz -o data/GSE120561/SRR7908190_Q1_Queen_Pool_1.fastq.gz
+
     mkdir -p data/GSE120561
     echo "Downloading GSE120561"
     curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR790/006/SRR7908186/SRR7908186.fastq.gz -o data/GSE120561/rawFastq/SRR7908186_W1_Worker_Pool.fastq.gz
@@ -53,15 +75,16 @@ if [ "$experiment" = "GSE120561" ]; then
     curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR790/000/SRR7908190/SRR7908190.fastq.gz -o data/GSE120561/rawFastq/SRR7908190_Q1_Queen_Pool.fastq.gz
 
 
-
+########################################################################
 elif [ "$experiment" = "GSE93028" ]; then
-# sample experiment id GSE93028 
-# Title:	Integration of lncRNA-miRNA-mRNA reveals novel insights into reproductive regulation in honey bees
-# Organism:	Apis mellifera
-# Experiment type:	Expression profiling by high throughput sequencing Non-coding RNA profiling by high throughput sequencing
-# link: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE93028
+########################################################################
+    # sample experiment id GSE93028 
+    # Title:	Integration of lncRNA-miRNA-mRNA reveals novel insights into reproductive regulation in honey bees
+    # Organism:	Apis mellifera
+    # Experiment type:	Expression profiling by high throughput sequencing Non-coding RNA profiling by high throughput sequencing
+    # link: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE93028
 
-    mkdir -p data/GSE93028
+    mkdir -p data/GSE93028/rawFastq
     echo "Downloading GSE93028"
 
     # (1) ovaries of virgin queens (n=3); Characteristics: tissue: ovaries, age: virgin queen. 
@@ -117,23 +140,18 @@ elif [ "$experiment" = "GSE93028" ]; then
     curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR777/005/SRR7770435/SRR7770435_2.fastq.gz -o data/GSE93028/rawFastq/SRR7770435_W03_2.fastq.gz
 
 
+########################################################################
+elif [ "$experiment" = "PRJNA636804" ]; then
+########################################################################
+    mkdir -p data/PRJNA636804
+    # Project ID PRJNA636804
+    # Title: Sex- and caste-specific transcriptomes of larval honey bee (Apis mellifera L.) gonads: DMRT A2 and Hsp83 are differentially expressed and regulated by juvenile hormone
+    # Authors: Denyse Cavalcante Lago, Martin Hasselmann, Klaus Hartfelder. 
 
-elif [ "$experiment" = "PRJNA996350" ]; then
-    mkdir -p data/PRJNA996350
-    # controls
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR253/009/SRR25343809/SRR25343809_1.fastq.gz -o data/PRJNA996350/rawFastq/SRR25343809_con3_1.fastq.gz
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR253/009/SRR25343809/SRR25343809_2.fastq.gz -o data/PRJNA996350/rawFastq/SRR25343809_con3_2.fastq.gz
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR253/010/SRR25343810/SRR25343810_1.fastq.gz -o data/PRJNA996350/rawFastq/SRR25343810_con2_1.fastq.gz
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR253/010/SRR25343810/SRR25343810_2.fastq.gz -o data/PRJNA996350/rawFastq/SRR25343810_con2_2.fastq.gz
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR253/011/SRR25343811/SRR25343811_1.fastq.gz -o data/PRJNA996350/rawFastq/SRR25343811_con1_1.fastq.gz
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR253/011/SRR25343811/SRR25343811_2.fastq.gz -o data/PRJNA996350/rawFastq/SRR25343811_con1_2.fastq.gz
-    # RNA-i
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR253/012/SRR25343812/SRR25343812_1.fastq.gz -o data/PRJNA996350/rawFastq/SRR25343812_RNAi3_1.fastq.gz
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR253/012/SRR25343812/SRR25343812_2.fastq.gz -o data/PRJNA996350/rawFastq/SRR25343812_RNAi3_2.fastq.gz
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR253/013/SRR25343813/SRR25343813_1.fastq.gz -o data/PRJNA996350/rawFastq/SRR25343813_RNAi2_1.fastq.gz
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR253/013/SRR25343813/SRR25343813_2.fastq.gz -o data/PRJNA996350/rawFastq/SRR25343813_RNAi2_2.fastq.gz
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR253/014/SRR25343814/SRR25343814_1.fastq.gz -o data/PRJNA996350/rawFastq/SRR25343814_RNAi1_1.fastq.gz
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR253/014/SRR25343814/SRR25343814_2.fastq.gz -o data/PRJNA996350/rawFastq/SRR25343814_RNAi1_2.fastq.gz
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR119/011/SRR11940311/SRR11940311_1.fastq.gz -o data/PRJNA636804/rawFastq/SRR11940311_worker_1.fastq.gz
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR119/011/SRR11940311/SRR11940311_2.fastq.gz -o data/PRJNA636804/rawFastq/SRR11940311_worker_2.fastq.gz
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR119/010/SRR11940310/SRR11940310_1.fastq.gz -o data/PRJNA636804/rawFastq/SRR11940310_queen_1.fastq.gz
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR119/010/SRR11940310/SRR11940310_2.fastq.gz -o data/PRJNA636804/rawFastq/SRR11940310_queen_2.fastq.gz
 
 
 fi
