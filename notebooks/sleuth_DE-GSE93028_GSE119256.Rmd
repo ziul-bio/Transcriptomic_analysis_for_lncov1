@@ -267,25 +267,14 @@ transformation in the sleuth_prep() step. By default, these would have been natu
 
 Salving results table
 ```{r}
-#write.xlsx(sleuth_results_V, file='results/sleuth_results_V.xlsx', sheetName = "DE_V", 
-#  col.names = TRUE, row.names = FALSE, append = FALSE)
-#
-#write.xlsx(sleuth_results_Q, file='results/sleuth_results_Q.xlsx', sheetName = "DE_Q", 
-#  col.names = TRUE, row.names = FALSE, append = FALSE)
-#
-#write.xlsx(sleuth_results_C, file='results/sleuth_results_C.xlsx', sheetName = "DE_C", 
-#  col.names = TRUE, row.names = FALSE, append = FALSE)
-#
-#write.xlsx(sleuth_results_R, file='results/sleuth_results_R.xlsx', sheetName = "DE_R", 
-#  col.names = TRUE, row.names = FALSE, append = FALSE)
+#library(writexl)
+
+#write_xlsx(sleuth_results_V, path='../results/GSE93028/sleuth/results_sleuth_W_x_V_Chen_et.al.xlsx')
+#write_xlsx(sleuth_results_Q, path='../results/GSE93028/sleuth/results_sleuth_W_x_Q_Chen_et.al.xlsx')
+#write_xlsx(sleuth_results_C, path='../results/GSE93028/sleuth/results_sleuth_W_x_C_Chen_et.al.xlsx')
+#write_xlsx(sleuth_results_R, path='../results/GSE93028/sleuth/results_sleuth_W_x_R_Chen_et.al.xlsx')
+                                
 ```
-
-
-## Acesse o Shiny dos resultados (precisa de tela gráfica):
-```{r}
-#sleuth_live(so)
-```
-
 
 
 # Results and visualization
@@ -306,38 +295,6 @@ head(sleuth_sig_V)
 ```
 
 # 2. Volcano plot
-
-volcano plot, Plots of beta value (regression) versus log of significance p-values.
-
-## Volcano plot Virgen queen vs Worker
-```{r, fig.height=5, fig.width=9}
-q <- as.data.frame(sleuth_results_V)
-q <- na.omit(q)
-q$significant <- ifelse(q$qval<0.05, "True", "False")
-q[which(abs(q$b)<1),'significant'] <- "False"
-q <- q[order(q$qval),]
-
-legen <- q[q$target_id %in% txI, ]
-legen$target_id <- recode(legen$target_id, XM_001120691.5 = "LOC726407", 
-                          #XM_393605.7 = "Gapdh" ,
-                          XM_624635.6 = "Tudor-SN",
-                          XM_006569892.2 = "Ef1α" )
-
-volcano = ggplot(q, aes(b, -log10(qval))) + 
-  geom_point(aes(col=significant)) +
-  scale_color_manual(values=c("red", "gray"))
-
-
-volcano + geom_label_repel(data= legen, aes(label= legen$target_id), size=4, 
-  box.padding = unit(2, "lines"), point.padding = unit(5, "points")) +
-  labs(title= "Volcano plot of Diferencial Expressed Transcipts",
-       subtitle = "Comparison of Virgen Queen vs Worker",
-       x= expression(paste("Log"[2], " fold change")), 
-       y= expression(paste("q-value (-log"[10], ")")),
-       color="Differentially Expressed") +
-  theme_bw() + coord_cartesian(clip = "off")
-#ggsave(file="results/volcano1_Virgen.jpeg", height=5, width=9, dpi=300)
-```
 
 
 
@@ -369,92 +326,9 @@ volcano + geom_label_repel(data= legen, aes(label= legen$target_id), size=4,
        y= expression(paste("q-value (-log"[10], ")")),
        color="Differentially Expressed") +
   theme_bw() + coord_cartesian(clip = "off")
-ggsave(file="results/volcano2_Normal-Queen.jpeg", height=5, width=9, dpi=300)
+#ggsave(file="results/volcano2_Normal-Queen.jpeg", height=5, width=9, dpi=300)
 ```
 
-
-## Volcano plot caged queen vs Worker
-```{r, fig.height=5, fig.width=9}
-q <- as.data.frame(sleuth_results_C)
-q <- na.omit(q)
-q$significant <- ifelse(q$qval<0.05, "True", "False")
-q[which(abs(q$b)<1),'significant'] <- "False"
-q <- q[order(q$qval),]
-
-
-legen <- q[q$target_id %in% txI, ]
-legen$target_id <- recode(legen$target_id, XM_001120691.5 = "LOC726407", 
-                          #XM_393605.7 = "Gapdh" ,
-                          XM_624635.6 = "Tudor-SN",
-                          XM_006569892.2 = "Ef1α" )
-
-volcano = ggplot(q, aes(b, -log10(qval))) + 
-  geom_point(aes(col=significant)) +
-  scale_color_manual(values=c("red", "gray"))
-
-
-volcano + geom_label_repel(data= legen, aes(label= legen$target_id), size=4, 
-  box.padding = unit(2, "lines"), point.padding = unit(5, "points")) +
-  labs(title= "Volcano plot of Diferencial Expressed Transcipts",
-       subtitle = "Comparison of Caged Queen vs Worker",
-       x= expression(paste("Log"[2], " fold change")), 
-       y= expression(paste("q-value (-log"[10], ")")),
-       color="Differentially Expressed") +
-  theme_bw() + coord_cartesian(clip = "off")
-ggsave(file="results/volcano3_Caged.jpeg", height=5, width=9, dpi=300)
-```
-
-
-## Volcano plot recovered queen vs Worker
-```{r, fig.height=5, fig.width=9}
-q <- as.data.frame(sleuth_results_R)
-q <- na.omit(q)
-q$significant <- ifelse(q$qval<0.05, "True", "False")
-q[which(abs(q$b)<1),'significant'] <- "False"
-q <- q[order(q$qval),]
-
-
-legen <- q[q$target_id %in% txI, ]
-legen$target_id <- recode(legen$target_id, XM_001120691.5 = "LOC726407", 
-                          #XM_393605.7 = "Gapdh" ,
-                          XM_624635.6 = "Tudor-SN",
-                          XM_006569892.2 = "Ef1α" )
-
-volcano = ggplot(q, aes(b, -log10(qval))) + 
-  geom_point(aes(col=significant)) +
-  scale_color_manual(values=c("red", "gray"))
-
-
-volcano + geom_label_repel(data= legen, aes(label= legen$target_id), size=4, 
-  box.padding = unit(2, "lines"), point.padding = unit(5, "points")) +
-  labs(title= "Volcano plot of Diferencial Expressed Transcipts",
-       subtitle = "Comparison of Recovered Queen vs Worker",
-       x= expression(paste("Log"[2], " fold change")), 
-       y= expression(paste("q-value (-log"[10], ")")),
-       color="Differentially Expressed") +
-  theme_bw() + coord_cartesian(clip = "off")
-ggsave(file="results/volcano4_Recovered.jpeg", height=5, width=9, dpi=300)
-```
-
-
-## 3. PCA
-```{r, fig.height=5, fig.width=9}
-#png("pca-transcritos.png",height = 8, width = 10, units = 'in',res=600)
-
-plot_pca(so, pc_x = 1L, pc_y = 2L, use_filtered = TRUE,
-  units = "est_counts", text_labels = F, color_by = "condition",
-  point_size = 4) +
-  theme_bw() + # remove default ggplot2 theme
-  ggtitle(label = "Principal Component Analysis (PCA)", 
-          subtitle = "Variance among worker, queenless-worker and queen")
-```
-
-
-## 4. Density
-```{r, fig.height=5, fig.width=9}
-plot_group_density(so, use_filtered = TRUE, units = "est_counts",
-                   trans = "log", grouping = "condition", offset = 1)  
-```
 
 
 ## 5. Boxplots
@@ -476,7 +350,6 @@ ggtitle("lncov1") + theme_bw(10) +
 
 
 plot1
-#ggsave(file="results/boxplot1_lncov1.jpeg", height=5, width=9, dpi=300)
 ```
 
 
@@ -495,7 +368,6 @@ ggtitle("Ef1α") + theme_bw(10) +
 
 
 plot2
-#ggsave(file="results/boxplot5_Ef1α.jpeg", height=8, width=11, dpi=300)
 ```
 
 
@@ -510,16 +382,6 @@ plot_grid(plot1,
 ggsave(file="../results/GSE93028/figures/boxplot_GSE93028_lncov1_elf1a.jpeg", height=8, width=10, dpi=600)
 ```
 
-
-## 6. Heatmaps
-
-we can perform an expression heatmap for select transcripts, transcripts of interest:
-```{r, fig.height=5, fig.width=9}
-# Filtando a matriz pelos transcritos de interesse
-mat <- sleuth_results_Q[sleuth_results_Q$target_id %in% txI, ]
-  
-plot_transcript_heatmap(DE_Q, units = "est_counts", transcripts = mat$target_id)
-```
 
 ## Referências
 

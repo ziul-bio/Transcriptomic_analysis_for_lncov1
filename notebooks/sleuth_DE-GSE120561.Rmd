@@ -275,7 +275,7 @@ transformation in the sleuth_prep() step. By default, these would have been natu
 ```{r}
 library(writexl)
 
-#write_xlsx(sleuth_results_Q, path='../results/GSE120561/sleuth/results_sleuth_W_x_Q_Ducan_et.al.xlsx')
+write_xlsx(sleuth_results_Q, path='../results/GSE120561/sleuth/results_sleuth_W_x_Q_Ducan_et.al.xlsx')
 ```
 
 

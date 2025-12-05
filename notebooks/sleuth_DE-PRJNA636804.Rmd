@@ -244,18 +244,9 @@ transformation in the sleuth_prep() step. By default, these would have been natu
 
 Salving results table
 ```{r}
-#write.xlsx(sleuth_results_D, 'results/sleuth_results_D.xlsx', col_names = TRUE)
-
-#write_xlsx(sleuth_results_Q, path='../results/PRJNA636804/sleuth/results_deseq2_W_x_Q_Lago_et.al.xlsx')
-
+#library(writexl)
+#write_xlsx(sleuth_results_Q, path='../results/PRJNA636804/sleuth/results_sleuth_W_x_Q_Lago_et.al.xlsx')
 ```
-
-
-## Acesse o Shiny dos resultados (precisa de tela gráfica):
-```{r}
-#sleuth_live(so)
-```
-
 
 
 # Results and visualization

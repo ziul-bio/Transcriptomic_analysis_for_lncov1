@@ -41,12 +41,28 @@ fi
 
 
 
+########################################################################
+if [ "$experiment" = "PRJNA636804" ]; then
+########################################################################
+    mkdir -p data/PRJNA636804
+    # Project ID PRJNA636804
+    # Title: Sex- and caste-specific transcriptomes of larval honey bee (Apis mellifera L.) gonads: DMRT A2 and Hsp83 are differentially expressed and regulated by juvenile hormone
+    # Authors: Denyse Cavalcante Lago, Martin Hasselmann, Klaus Hartfelder. 
+
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR119/011/SRR11940311/SRR11940311_1.fastq.gz -o data/PRJNA636804/rawFastq/SRR11940311_worker_1.fastq.gz
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR119/011/SRR11940311/SRR11940311_2.fastq.gz -o data/PRJNA636804/rawFastq/SRR11940311_worker_2.fastq.gz
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR119/010/SRR11940310/SRR11940310_1.fastq.gz -o data/PRJNA636804/rawFastq/SRR11940310_queen_1.fastq.gz
+    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR119/010/SRR11940310/SRR11940310_2.fastq.gz -o data/PRJNA636804/rawFastq/SRR11940310_queen_2.fastq.gz
+
+
+
 
 ########################################################################
-if [ "$experiment" = "GSE120561" ]; then
+elif [ "$experiment" = "GSE120561" ]; then
 ########################################################################
+    # Contributor(s)	Duncan EJ, Leask MP, Dearden PK
     # Sample - GSE120561 (queen, queenless-worker and worker)
-    #https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120561
+    # https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120561
     # Sample 4 - GSE120561 (queen, queenless-worker and worker)
     # https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120561
     # Overall design: RNA-seq to measure gene expression in queen,
@@ -78,6 +94,7 @@ if [ "$experiment" = "GSE120561" ]; then
 ########################################################################
 elif [ "$experiment" = "GSE93028" ]; then
 ########################################################################
+    # Contributor(s)	Chen X
     # sample experiment id GSE93028 
     # Title:	Integration of lncRNA-miRNA-mRNA reveals novel insights into reproductive regulation in honey bees
     # Organism:	Apis mellifera
@@ -140,18 +157,6 @@ elif [ "$experiment" = "GSE93028" ]; then
     curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR777/005/SRR7770435/SRR7770435_2.fastq.gz -o data/GSE93028/rawFastq/SRR7770435_W03_2.fastq.gz
 
 
-########################################################################
-elif [ "$experiment" = "PRJNA636804" ]; then
-########################################################################
-    mkdir -p data/PRJNA636804
-    # Project ID PRJNA636804
-    # Title: Sex- and caste-specific transcriptomes of larval honey bee (Apis mellifera L.) gonads: DMRT A2 and Hsp83 are differentially expressed and regulated by juvenile hormone
-    # Authors: Denyse Cavalcante Lago, Martin Hasselmann, Klaus Hartfelder. 
-
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR119/011/SRR11940311/SRR11940311_1.fastq.gz -o data/PRJNA636804/rawFastq/SRR11940311_worker_1.fastq.gz
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR119/011/SRR11940311/SRR11940311_2.fastq.gz -o data/PRJNA636804/rawFastq/SRR11940311_worker_2.fastq.gz
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR119/010/SRR11940310/SRR11940310_1.fastq.gz -o data/PRJNA636804/rawFastq/SRR11940310_queen_1.fastq.gz
-    curl -L ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR119/010/SRR11940310/SRR11940310_2.fastq.gz -o data/PRJNA636804/rawFastq/SRR11940310_queen_2.fastq.gz
 
 
 fi
