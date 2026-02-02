@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+title: "Transcriptomic analysis for lncov1"
+message: "If you use this pipline, please cite it and the paper."
+type: software
+authors:
+  - family-names: "Vieira"
+    given-names: "Luiz"
+    orcid: "https://orcid.org/0009-0002-4195-1884"
+version: 1.0.0
+date-released: 2026-02-02
+url: "https://github.com/ziul-bio/Transcriptomic_analysis_for_lncov1"
